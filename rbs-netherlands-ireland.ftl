@@ -1,5 +1,7 @@
 <#-- Author: Michael Wang | mwang@netsuite.com -->
 <#-- Bank Format: pain.001.001.03 xml -->
+<#-- cached values -->
+<#assign totalAmount = computeTotalAmount(payments)>
 <#-- template building -->
 #OUTPUT START#
 <?xml version="1.0" encoding="UTF-8"?>
@@ -7,7 +9,7 @@
 <CstmrCdtTrfInitn>
 
 <GrpHdr>
-	<MsgId>RBS${getCountryCode(cbank.custpage_eft_custrecord_2663_bank_country)}_${pfa.custrecord_2663_process_date?date?string("yyyy-MM-dd")}_ID${pfa.id}</MsgId> <#-- Max Length = 35;Format = RBS_FileCreationDate_PFA.ID -->
+	<MsgId>RBS${getCountryCode(cbank.custpage_eft_custrecord_2663_bank_country)}_${pfa.custrecord_2663_process_date?date?string("yyyy-MM-dd")}_ID${pfa.id}</MsgId> <#--Max Length = 35;Format = RBS_FileCreationDate_PFA.ID-->
 	<CreDtTm>${pfa.custrecord_2663_file_creation_timestamp?date?string("yyyy-MM-dd")}T${pfa.custrecord_2663_file_creation_timestamp?time?string("HH:mm:ss")}</CreDtTm>
 	<NbOfTxs>${payments?size?c}</NbOfTxs>
 	<CtrlSum>${formatAmount(totalAmount,"dec")}</CtrlSum>
