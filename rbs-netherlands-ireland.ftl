@@ -83,11 +83,9 @@
 				<BIC>${ebank.custrecord_2663_entity_bic}</BIC>
 			<#--If no BIC/Swift Code, a routing number will be used (Most US Banks)-->	
 			<#else>
-				<Id>
 					<Othr>
 						<Id>${ebank.custrecord_2663_entity_bank_no}</Id>
 					</Othr>
-				</Id>
 			</#if>
 			</FinInstnId>
 		</CdtrAgt>
