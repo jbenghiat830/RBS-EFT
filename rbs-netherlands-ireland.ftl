@@ -24,10 +24,22 @@
 	<#assign ebank = ebanks[payment_index]>
 	<#assign entity = entities[payment_index]>
 	<#-- Check for SEPA(Single Euro Payments Area) Payments -->
-	<#if getCurrencySymbol(payment.currency) == "EUR">
-		<#assign isSEPA = "true">
-	<#else>
+	<#if ebank.custrecord_2663_bank_payment_method == "Wire">
+		<#assign isWire = "true">
 		<#assign isSEPA = "false">
+		<#assign isACH = "false">
+	<#else>
+		<#assign isWire = "false">
+		<#if getCurrencySymbol(payment.currency) == "EUR">
+			<#assign isSEPA = "true">
+		<#else>
+			<#assign isSEPA = "false">
+		</#if>
+		<#if ebank.custrecord_2663_bank_payment_method == "ACH">
+			<#assign isACH = "true">
+		<#else>
+			<#assign isACH = "false">
+		</#if>
 	</#if>
 <PmtInf>
 	<PmtInfId>RBS_${pfa.id}_${payments?size?c}</PmtInfId> <#-- Format = RBS_PFA.ID_TotalPaymentCount (In this EFT File) -->
@@ -37,7 +49,9 @@
 	<PmtTpInf>
 		<SvcLvl>
 		<#-- Non SEPA = NURG, Urgent = URGP -->
-		<#if isSEPA == "true">
+		<#if isWire == "true">
+			<Cd>URGP</Cd>
+		<#elseif isSEPA == "true">
 			<Cd>SEPA</Cd>
 		<#else>
 			<Cd>NURG</Cd>
