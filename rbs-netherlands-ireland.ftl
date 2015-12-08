@@ -79,7 +79,8 @@
 	<#-- SEPA = SLEV, Non SEPA = SHAR -->
 	<#if isSEPA == "true">
 	<ChrgBr>SLEV</ChrgBr>
-	<#else>
+	</#if>
+	<#if isWire == "true" || isACH == "true">
 	<ChrgBr>SHAR</ChrgBr>
 	</#if>
 	<CdtTrfTxInf>
@@ -93,13 +94,17 @@
 		<CdtrAgt>
 			<FinInstnId>
 			<#--Check if entity has BIC/Swift Code-->
-			<#if ebank.custrecord_2663_entity_bic?has_content>
-				<BIC>${ebank.custrecord_2663_entity_bic}</BIC>
+			<#if isSEPA == "true">
+				<#if ebank.custrecord_2663_entity_bic?has_content>
+					<BIC>${ebank.custrecord_2663_entity_bic}</BIC>
+				</#if>
 			<#--If no BIC/Swift Code, a routing number will be used (Most US Banks)-->	
 			<#else>
+				<#if isWire == "true">
 					<Othr>
 						<Id>${ebank.custrecord_2663_entity_bank_no}</Id>
 					</Othr>
+				</#if>
 			</#if>
 			</FinInstnId>
 		</CdtrAgt>
@@ -111,17 +116,20 @@
 		</Cdtr>
 		<CdtrAcct>
 		<#--Check if entity has IBAN number (European Banks)-->
+		<#if isSEPA == "true" &&
 		<#if ebank.custrecord_2663_entity_iban?has_content>
 			<Id>
 				<IBAN>${ebank.custrecord_2663_entity_iban}</IBAN>
 			</Id>
 		<#--Check if entity only has bank account number-->	
 		<#else>
-			<Id>
-				<Othr>
-					<Id>${ebank.custrecord_2663_entity_acct_no}</Id>
-				</Othr>
-			</Id>
+			<#if isWire == "true">
+				<Id>
+					<Othr>
+						<Id>${ebank.custrecord_2663_entity_acct_no}</Id>
+					</Othr>
+				</Id>
+			</#if>
 		</#if>
 		</CdtrAcct>
 		<RmtInf>
